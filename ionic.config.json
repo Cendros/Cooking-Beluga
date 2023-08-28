@@ -1,0 +1,7 @@
+{
+  "name": "CookingBeluga",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
