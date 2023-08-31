@@ -1,7 +1,5 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import { IonApp, setupIonicReact } from '@ionic/react';
+import { SQLiteHook, useSQLite } from 'react-sqlite-hook';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -21,22 +19,37 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import 'primeflex/primeflex.min.css'
+
+import TabBar from './components/TabBar';
+import { useState } from 'react';
+
+interface JsonListenerInterface {
+    jsonListeners: boolean,
+    setJsonListeners: React.Dispatch<React.SetStateAction<boolean>>,
+}
+interface existingConnInterface {
+    existConn: boolean,
+    setExistConn: React.Dispatch<React.SetStateAction<boolean>>,
+}
+
+export let sqlite: SQLiteHook;
+export let existingConn: existingConnInterface;
+export let isJsonListeners: JsonListenerInterface;
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = _ => {
 
+    const [existConn, setExistConn] = useState(false);
+    existingConn = {existConn: existConn, setExistConn: setExistConn};
+
+    sqlite = useSQLite();
+    
+    return (
+        <IonApp>
+            <TabBar />
+        </IonApp>
+    );
+}
 export default App;

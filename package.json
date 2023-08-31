@@ -12,8 +12,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@capacitor-community/sqlite": "^5.0.7",
+    "@capacitor/android": "5.3.0",
     "@capacitor/app": "5.0.6",
-    "@capacitor/core": "5.3.0",
+    "@capacitor/core": "^5.3.0",
     "@capacitor/haptics": "5.0.6",
     "@capacitor/keyboard": "5.0.6",
     "@capacitor/status-bar": "5.0.6",
@@ -22,13 +24,16 @@
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "ionicons": "^7.0.0",
+    "jeep-sqlite": "^2.5.1",
+    "primeflex": "^3.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^5.3.4",
+    "react-sqlite-hook": "^3.2.1"
   },
   "devDependencies": {
-    "@capacitor/cli": "5.3.0",
+    "@capacitor/cli": "^5.3.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
