@@ -21,8 +21,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import 'primeflex/primeflex.min.css'
 
-import TabBar from './components/TabBar';
 import { useState } from 'react';
+import Router from './components/Router';
 
 interface JsonListenerInterface {
     jsonListeners: boolean,
@@ -48,7 +48,7 @@ const App: React.FC = _ => {
     
     return (
         <IonApp>
-            <TabBar />
+            <Router />
         </IonApp>
     );
 }

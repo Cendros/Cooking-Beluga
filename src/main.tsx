@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { defineCustomElements as jeepSqlite, applyPolyfills, JSX as LocalJSX  } from "jeep-sqlite/loader";
+import { JSX as LocalJSX  } from "jeep-sqlite/loader";
+import { initDb } from './db/init';
 
-applyPolyfills().then(() => {
-    jeepSqlite(window);
-});
+
+type StencilToReact<T> = {
+    [P in keyof T]?: T[P] & Omit<HTMLAttributes<Element>, 'className'> & {
+        class?: string;
+    };
+} ;
+
+declare global {
+    export namespace JSX {
+        interface IntrinsicElements extends StencilToReact<LocalJSX.IntrinsicElements> {
+        }
+    }
+}
+
 window.addEventListener('DOMContentLoaded', async _ => {
+    await initDb();
+
     const container = document.getElementById('root');
     const root = createRoot(container!);
     root.render(
