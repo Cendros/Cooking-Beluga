@@ -1,28 +1,28 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonContent, IonHeader, IonIcon, IonInput, IonModal, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
-import React, { useRef, useState } from 'react';
+import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonModal, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
+import React, { useRef } from 'react';
 import { getRecipies, isExisting, saveRecipe } from '../services/recipe';
 import { arrowBack } from 'ionicons/icons';
-import { Formik, FormikHelpers, Form, Field, FieldInputProps, FormikFormProps, FastFieldProps, FormikState, FieldProps } from 'formik';
+import { Formik, FormikHelpers, Form, Field, FastFieldProps } from 'formik';
 import { RecipeForm } from '../interfaces/repice';
-import { recipeStore } from '../stores/recipe';
+import { useAtom } from 'jotai'
+import { recipiesAtom } from '../atoms/recipe';
 
 const NewRecipe: React.FC = () => {
 
-    const setRecipies = recipeStore.use.setRecipies();
-
-    const [toast] = useIonToast();
+    const [_recipies, setRecipies] = useAtom(recipiesAtom);
 
     const modal = useRef<HTMLIonModalElement>(null);
 
     const initialValues: any = {
         name: '',
         quantity: null,
-        quantityType: null
+        quantityType: null,
+        category: null,
     }
     
     const onSubmit = async (values: RecipeForm, { setSubmitting }: FormikHelpers<RecipeForm>) => {
         setSubmitting(false);
-        await saveRecipe(values.name, values.quantity, values.quantityType);
+        await saveRecipe(values.name, values.quantity, values.quantityType, values.category);
         const _recipies = await getRecipies();
         setRecipies(_recipies);
         modal.current?.dismiss();
@@ -54,7 +54,7 @@ const NewRecipe: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-                    <Formik initialValues={initialValues} validate={validate} onSubmit={onSubmit}>
+                    <Formik initialValues={initialValues} validate={validate} onSubmit={onSubmit} validateOnChange={false} validateOnBlur={false} validateOnMount={false}>
                             <Form>
                                 <Field name="name" component>
                                     {({ field, form: {touched, errors}, meta}: FastFieldProps) => (
@@ -104,6 +104,26 @@ const NewRecipe: React.FC = () => {
                                             className={errors.quantityType ? 'ion-invalid ion-touched mb-2' : 'mb-2'}
                                             errorText={String(errors.quantityType || '')}
                                         />
+                                    )}
+                                </Field>
+
+                                <Field name="category" component>
+                                    {({ field, form: {touched, errors}, meta}: FastFieldProps) => (
+                                        <IonSelect
+                                            label='Category'
+                                            name={field.name}
+                                            value={field.value}
+                                            onIonChange={field.onChange}
+                                            onIonBlur={field.onBlur}
+                                            labelPlacement='floating'
+                                            placeholder='Category'
+                                            fill='outline'
+                                        >
+                                            <IonSelectOption value="Breakfast">Breakfast</IonSelectOption>
+                                            <IonSelectOption value="Light meal">Light meal</IonSelectOption>
+                                            <IonSelectOption value="Mains">Mains</IonSelectOption>
+                                            <IonSelectOption value="Desert">Desert</IonSelectOption>
+                                        </IonSelect>
                                     )}
                                 </Field>
                                 

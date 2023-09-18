@@ -1,7 +1,7 @@
 import { executeQuery } from "../db/db";
 
-export const saveRecipe = async (name: string, quantity: number|null = null, quantityType: string|null = null) => {
-    const query = `INSERT INTO recipe (name, quantity, quantity_type) VALUES ('${name.trim()}', ${quantity}, '${quantityType || 'NULL'}');`;    
+export const saveRecipe = async (name: string, quantity: number|undefined = undefined, quantityType: string|undefined = undefined, category: string|undefined = undefined) => {
+    const query = `INSERT INTO recipe (name, quantity, quantity_type, category) VALUES ('${name.trim()}', ${quantity}, '${quantityType || 'NULL'}', '${category || 'NULL'}');`;    
     await executeQuery(query);
 }
 
@@ -15,7 +15,6 @@ export const getRecipies = async () => {
     const query = `
         SELECT *
         FROM recipe
-        WHERE is_recipe = 1
         ORDER BY name ASC;
     `;
 

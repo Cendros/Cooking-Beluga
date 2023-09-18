@@ -1,22 +1,38 @@
-import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, RefresherEventDetail } from '@ionic/react';
-import { addOutline, closeCircle, refreshCircle, refreshCircleOutline } from 'ionicons/icons';
+import { IonButton, IonContent, IonHeader, IonIcon, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, RefresherEventDetail, useIonModal } from '@ionic/react';
+import { addOutline } from 'ionicons/icons';
 import React, { useEffect } from 'react';
-import { Recipe } from '../interfaces/repice';
-import { recipeStore } from '../stores/recipe';
-import { deleteRecipe as deleteRecipeApi, getRecipies } from '../services/recipe';
+import { getRecipies } from '../services/recipe';
 import NewRecipe from './NewRecipe';
+import Card from '../components/Recipe/Card';
+import { useAtom } from 'jotai';
+import { recipiesAtom, selectedRecipeAtom } from '../atoms/recipe';
+import { Details } from '../components/Recipe/Details';
 
 const Cook: React.FC = () => {
 
-    const recipies = recipeStore.use.recipies();
-    const setRecipies = recipeStore.use.setRecipies();
+    const [recipies, setRecipies] = useAtom(recipiesAtom);
+    const [selectedRecipe, setSelectedRecipe] = useAtom(selectedRecipeAtom);
 
-    useEffect(() => {
-        console.log(recipies);
-        
+    const ModalDetails = ({onDismiss}: {onDismiss: () => void;}) => {
+        return (
+            <Details recipe={selectedRecipe} onDismiss={onDismiss} />
+        )
+    }
+
+    const [present, dismiss] = useIonModal(ModalDetails, {
+        onDismiss: () => dismiss(),
+    });
+
+    useEffect(() => {        
         if (!recipies)
             fetchRecipies();
     }, []);
+
+    useEffect(() => {
+        if (!selectedRecipe)
+            return;
+        present({ onDidDismiss: () => setSelectedRecipe(undefined) });
+    }, [selectedRecipe]);
 
     const fetchRecipies = async () => {        
         const _recipies = await getRecipies();
@@ -26,16 +42,6 @@ const Cook: React.FC = () => {
     const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
         await fetchRecipies();
         event.detail.complete();
-    }
-
-    const deleteRecipe = async (id: number) => {
-        await deleteRecipeApi(id);
-        if (! recipies)
-            return;
-        
-        const _recipies = [...recipies];
-        _recipies.splice(_recipies.findIndex(d => d.id === id), 1);
-        setRecipies(_recipies);
     }
 
     return <>
@@ -50,29 +56,15 @@ const Cook: React.FC = () => {
                 </IonRefresherContent>
             </IonRefresher>
             
-            My recipies
-            <IonButton expand='block' color='secondary' id='open-new-recipe' >
+            <IonButton expand='block' color='secondary' id='open-new-recipe' className='mb-3'>
                 New Recipe
                 <IonIcon slot='start' icon={addOutline} />
-            </IonButton>
-            <IonButton expand='block' color='light' onClick={fetchRecipies} >
-                Refresh
-                <IonIcon slot='start' icon={refreshCircleOutline} />
             </IonButton>
 
                 { recipies?.length ?
                     <>
                         { recipies.map(recipe => (
-                            <IonCard key={recipe.id}>
-                                <IonCardHeader>
-                                    <div className='flex flex-row justify-content-between align-items-center'>
-                                        <IonCardTitle>{recipe.name}</IonCardTitle>
-                                        <IonButton className='border-round' color="danger" onClick={() => deleteRecipe(recipe.id)}>
-                                            <IonIcon slot='icon-only' icon={closeCircle} />
-                                        </IonButton>
-                                    </div>
-                                </IonCardHeader>
-                            </IonCard>
+                            <Card key={recipe.id} recipe={recipe} />
                         ))}
                     </>
                 :

@@ -3,6 +3,7 @@ export interface Recipe {
     name: string,
     quantity: number,
     quantityType: string,
+    category: string,
     lastUpdate: string,
     isRecipe: boolean
 }
@@ -10,5 +11,6 @@ export interface Recipe {
 export interface RecipeForm {
     name: string,
     quantity: number,
-    quantityType: string
+    quantityType: string,
+    category: string
 }

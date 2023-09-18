@@ -3,12 +3,14 @@ import { SQLiteConnection, CapacitorSQLite, SQLiteDBConnection } from '@capacito
 import { JeepSqlite } from 'jeep-sqlite/dist/components/jeep-sqlite';
 
 const createTables = `
+    PRAGMA user_version = 1;
+
     CREATE TABLE IF NOT EXISTS recipe (
         id INTEGER PRIMARY KEY NOT NULL,
         name TEXT UNIQUE NOT NULL,
         quantity INTEGER,
         quantity_type TEXT,
-        is_recipe INTEGER NOT NULL DEFAULT 1,
+        category TEXT,
         last_modified INTEGER DEFAULT (strftime('%s', 'now')),
         sql_deleted BOOLEAN DEFAULT 0 CHECK (sql_deleted IN (0, 1))
     );
@@ -31,7 +33,7 @@ const createTables = `
     FOR EACH ROW WHEN NEW.last_modified <= OLD.last_modified  
     BEGIN  
         UPDATE recipe SET last_modified= (strftime('%s', 'now')) WHERE id=OLD.id;   
-    END;      
+    END;
 `;
 
 export const initDb = async () => {
@@ -58,6 +60,8 @@ export const initDb = async () => {
         await db.open();
 
         await db.execute(createTables);
+        if (platform === 'web')
+            await sqlite.saveToStore('cooking_beluga');
     } catch (err) {
         console.error(err);
     }
