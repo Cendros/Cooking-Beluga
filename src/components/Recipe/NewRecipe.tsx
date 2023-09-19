@@ -1,11 +1,11 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonModal, IonPage, IonSelect, IonSelectOption, IonText, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
 import React, { useRef } from 'react';
-import { editRecipe, getRecipies, isExisting, saveRecipe } from '../services/recipe';
+import { editRecipe, getRecipies, isExisting, saveRecipe } from '../../services/recipe';
 import { arrowBack, checkmarkCircleOutline } from 'ionicons/icons';
 import { Formik, FormikHelpers, Form, Field, FastFieldProps } from 'formik';
-import { Recipe, RecipeForm } from '../interfaces/repice';
+import { Recipe, RecipeForm } from '../../interfaces/repice';
 import { useAtom } from 'jotai'
-import { recipiesAtom, selectedRecipeAtom } from '../atoms/recipe';
+import { recipiesAtom, selectedRecipeAtom } from '../../atoms/recipe';
 
 type NewRecipeProps = {
     recipe: Recipe | undefined,

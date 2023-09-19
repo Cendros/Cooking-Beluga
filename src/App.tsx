@@ -23,8 +23,12 @@ import './theme/item.css'
 import './theme/utilities.css'
 import 'primeflex/primeflex.min.css'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Router from './components/Router';
+import { toggleDarkTheme } from './utils/theme';
+import { useAtom } from 'jotai';
+import { themeToggleAtom } from './atoms/theme';
+import { getTheme, setTheme } from './services/preference';
 
 interface JsonListenerInterface {
     jsonListeners: boolean,
@@ -44,9 +48,31 @@ setupIonicReact();
 const App: React.FC = _ => {
 
     const [existConn, setExistConn] = useState(false);
+    const [_themeToggle, setThemeToggle] = useAtom(themeToggleAtom);
+    
+    sqlite = useSQLite();
+
+    const initializeDarkTheme = (isDark: boolean) => {
+        setThemeToggle(isDark);
+        toggleDarkTheme(isDark);
+    };
+
+    useEffect(() => {
+        initTheme();
+    }, []);
+
+    const initTheme = async () => {
+        const theme = await getTheme();
+        if (!theme?.length) {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+            initializeDarkTheme(prefersDark.matches);
+            await setTheme(prefersDark.matches)
+        } else initializeDarkTheme(theme[0].value === 'dark')
+    }
+
     existingConn = {existConn: existConn, setExistConn: setExistConn};
 
-    sqlite = useSQLite();
+
     
     return (
         <IonApp>

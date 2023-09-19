@@ -19,6 +19,7 @@ declare global {
 }
 
 window.addEventListener('DOMContentLoaded', async _ => {
+    
     await initDb();
 
     const container = document.getElementById('root');

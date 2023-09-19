@@ -3,7 +3,7 @@ import { SQLiteConnection, CapacitorSQLite, SQLiteDBConnection } from '@capacito
 import { JeepSqlite } from 'jeep-sqlite/dist/components/jeep-sqlite';
 
 const createTables = `
-    PRAGMA user_version = 1;
+    PRAGMA user_version = 2;
 
     CREATE TABLE IF NOT EXISTS recipe (
         id INTEGER PRIMARY KEY NOT NULL,
@@ -23,6 +23,13 @@ const createTables = `
         quantity_type TEXT NOT NULL,
         sql_deleted BOOLEAN DEFAULT 0 CHECK (sql_deleted IN (0, 1)),
         FOREIGN KEY (recipe_id) REFERENCES recipe(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS preference (
+        id INTEGER PRIMARY KEY NOT NULL,
+        key TEXT NOT NULL,
+        value TEXT NOT NULL,
+        sql_deleted BOOLEAN DEFAULT 0 CHECK (sql_deleted IN (0, 1))
     );
 
     CREATE INDEX IF NOT EXISTS recipe_index_name ON recipe (name);

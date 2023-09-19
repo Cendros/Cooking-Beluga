@@ -28,7 +28,7 @@ export const getRecipies = async () => {
 
     const res = await executeQuery(query);
     if (res)
-        return res?.values;
+        return res.values;
 }
 
 export const deleteRecipe = async (id: number) => {    
@@ -39,5 +39,5 @@ export const deleteRecipe = async (id: number) => {
 
     const res = await executeQuery(query);
     if (res)
-        return res?.values;
+        return res.values;
 }

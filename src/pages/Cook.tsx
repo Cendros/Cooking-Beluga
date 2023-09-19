@@ -1,12 +1,13 @@
-import { IonButton, IonContent, IonHeader, IonIcon, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, RefresherEventDetail, useIonModal } from '@ionic/react';
-import { addOutline } from 'ionicons/icons';
+import { IonButton, IonContent, IonHeader, IonIcon, IonMenuToggle, IonPage, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, RefresherEventDetail, useIonModal } from '@ionic/react';
+import { addOutline, settings } from 'ionicons/icons';
 import React, { useEffect } from 'react';
 import { getRecipies } from '../services/recipe';
-import NewRecipe from './NewRecipe';
+import NewRecipe from '../components/Recipe/NewRecipe';
 import Card from '../components/Recipe/Card';
 import { useAtom } from 'jotai';
 import { recipiesAtom, selectedRecipeAtom } from '../atoms/recipe';
 import { Details } from '../components/Recipe/Details';
+import { Settings } from '../components/Settings';
 
 const Cook: React.FC = () => {
 
@@ -59,35 +60,43 @@ const Cook: React.FC = () => {
     }
 
     return <>
-        <IonHeader>
-            <IonToolbar color='primary'>
-                <IonTitle>Cooking Beluga</IonTitle>
-            </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-            <IonRefresher slot='fixed' onIonRefresh={handleRefresh}>
-                <IonRefresherContent>
-                </IonRefresherContent>
-            </IonRefresher>
-            
-            <IonButton expand='block' color='secondary' className='mb-3' onClick={openNewRecipe}>
-                New Recipe
-                <IonIcon slot='start' icon={addOutline} />
-            </IonButton>
+        <Settings />
+        <IonPage id='main-content'>
+            <IonHeader>
+                <IonToolbar color='primary'>
+                    <div className='flex flex-row justify-content-between align-items-center mx-4'>
+                        <IonTitle className='m-0 p-0'>Cooking Beluga</IonTitle>
+                        <IonMenuToggle>
+                            <IonIcon icon={settings} className='text-3xl mt-1' />
+                        </IonMenuToggle>
+                    </div>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent className="ion-padding">
+                <IonRefresher slot='fixed' onIonRefresh={handleRefresh}>
+                    <IonRefresherContent>
+                    </IonRefresherContent>
+                </IonRefresher>
+                
+                <IonButton expand='block' color='secondary' className='mb-3' onClick={openNewRecipe}>
+                    New Recipe
+                    <IonIcon slot='start' icon={addOutline} />
+                </IonButton>
 
-                { recipies?.length ?
-                    <>
-                        { recipies.map(recipe => (
-                            <Card key={recipe.id} recipe={recipe} />
-                        ))}
-                    </>
-                :
-                    <>
-                        <span>You don't have any recipies.</span>
-                    </>
-                }
+                    { recipies?.length ?
+                        <>
+                            { recipies.map(recipe => (
+                                <Card key={recipe.id} recipe={recipe} />
+                            ))}
+                        </>
+                    :
+                        <>
+                            <span>You don't have any recipies.</span>
+                        </>
+                    }
 
-        </IonContent>
+            </IonContent>
+        </IonPage>
     </>
 };
 
