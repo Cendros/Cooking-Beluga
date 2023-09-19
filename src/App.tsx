@@ -21,6 +21,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './theme/item.css'
 import './theme/utilities.css'
+import './theme/toggler.css'
 import 'primeflex/primeflex.min.css'
 
 import { useEffect, useState } from 'react';
