@@ -28,8 +28,9 @@ import { useEffect, useState } from 'react';
 import Router from './components/Router';
 import { toggleDarkTheme } from './utils/theme';
 import { useAtom } from 'jotai';
-import { themeToggleAtom } from './atoms/theme';
-import { getTheme, setTheme } from './services/preference';
+import { themeToggleAtom } from './atoms/preference';
+import { getLanguage, getTheme, setLanguage, setTheme } from './services/preference';
+import { useTranslation } from 'react-i18next';
 
 interface JsonListenerInterface {
     jsonListeners: boolean,
@@ -49,7 +50,10 @@ setupIonicReact();
 const App: React.FC = _ => {
 
     const [existConn, setExistConn] = useState(false);
+
     const [_themeToggle, setThemeToggle] = useAtom(themeToggleAtom);
+
+    const { i18n } = useTranslation();
     
     sqlite = useSQLite();
 
@@ -60,6 +64,7 @@ const App: React.FC = _ => {
 
     useEffect(() => {
         initTheme();
+        initLanguage();
     }, []);
 
     const initTheme = async () => {
@@ -68,7 +73,16 @@ const App: React.FC = _ => {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
             initializeDarkTheme(prefersDark.matches);
             await setTheme(prefersDark.matches)
-        } else initializeDarkTheme(theme[0].value === 'dark')
+        } else initializeDarkTheme(theme[0].value === 'dark');
+    }
+
+    const initLanguage = async () => {
+        const language = await getLanguage();
+        console.log(language);
+        
+        if (!language?.length) {
+            await setLanguage(i18n.language);
+        } else i18n.changeLanguage(language[0].value);
     }
 
     existingConn = {existConn: existConn, setExistConn: setExistConn};

@@ -4,6 +4,8 @@ import App from './App';
 import { JSX as LocalJSX  } from "jeep-sqlite/loader";
 import { initDb } from './db/init';
 
+import './translations/i18n'
+
 
 type StencilToReact<T> = {
     [P in keyof T]?: T[P] & Omit<HTMLAttributes<Element>, 'className'> & {

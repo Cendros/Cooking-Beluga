@@ -5,6 +5,7 @@ import { closeCircle } from 'ionicons/icons';
 import { deleteRecipe as deleteRecipeApi } from '../../services/recipe';
 import { useAtom } from 'jotai';
 import { recipiesAtom, selectedRecipeAtom } from '../../atoms/recipe';
+import { useTranslation } from 'react-i18next';
 
 type CardProps = {
     recipe: Recipe,
@@ -13,8 +14,9 @@ type CardProps = {
 const Card = ({ recipe }: CardProps) => {
 
     const [recipies, setRecipies] = useAtom(recipiesAtom);
-
     const [_selectedRecipe, setSelectedRecipe] = useAtom(selectedRecipeAtom);
+    
+    const { t } = useTranslation();
 
     const deleteRecipe = async (id: number) => {
         await deleteRecipeApi(id);
@@ -42,7 +44,7 @@ const Card = ({ recipe }: CardProps) => {
                 </div>
                 <div className='col flex flex-column justify-content-between gap-2'>
                     <span className='text-xl'>{recipe.name}</span>
-                    { recipe.category && <IonText color="medium">{recipe.category}</IonText> }
+                    { recipe.category && <IonText color="medium">{t(`recipe.category.${recipe.category}`)}</IonText> }
                 </div>
             </div>
                 <IonButton className='border-round' color="danger" onClick={() => deleteRecipe(recipe.id)}>

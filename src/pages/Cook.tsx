@@ -8,11 +8,14 @@ import { useAtom } from 'jotai';
 import { recipiesAtom, selectedRecipeAtom } from '../atoms/recipe';
 import { Details } from '../components/Recipe/Details';
 import { Settings } from '../components/Settings';
+import { useTranslation } from 'react-i18next';
 
 const Cook: React.FC = () => {
 
     const [recipies, setRecipies] = useAtom(recipiesAtom);
     const [selectedRecipe, setSelectedRecipe] = useAtom(selectedRecipeAtom);
+
+    const { t } = useTranslation();
 
     const ModalDetails = ({onDismiss}: {onDismiss: () => void}) => {
         return (
@@ -79,7 +82,7 @@ const Cook: React.FC = () => {
                 </IonRefresher>
                 
                 <IonButton expand='block' color='secondary' className='mb-3' onClick={openNewRecipe}>
-                    New Recipe
+                    {t('recipe.newRecipe')}
                     <IonIcon slot='start' icon={addOutline} />
                 </IonButton>
 
@@ -91,7 +94,7 @@ const Cook: React.FC = () => {
                         </>
                     :
                         <>
-                            <span>You don't have any recipies.</span>
+                            <span>{t('recipe.emptyRecipies')}</span>
                         </>
                     }
 

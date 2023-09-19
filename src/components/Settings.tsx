@@ -1,25 +1,35 @@
 import React, { ChangeEvent, useEffect, useRef } from 'react'
 import { useAtomValue } from 'jotai';
-import { arrowBack, checkbox, moon, sunny } from 'ionicons/icons'
-import { themeToggleAtom } from '../atoms/theme';
+import { arrowBack, moon, sunny } from 'ionicons/icons'
+import { themeToggleAtom } from '../atoms/preference';
 import { toggleDarkTheme } from '../utils/theme';
-import { IonContent, IonIcon, IonMenu, IonMenuToggle, IonText, IonToggle, ToggleCustomEvent } from '@ionic/react'
-import { changeTheme } from '../services/preference';
+import { IonContent, IonIcon, IonMenu, IonMenuToggle, IonSelect, IonSelectOption, IonText, IonToggle, ToggleCustomEvent } from '@ionic/react'
+import { changeLanguage, changeTheme } from '../services/preference';
+import { useTranslation } from 'react-i18next';
 
 export const Settings = () => {
     const checkboxTheme = useRef<HTMLInputElement>(null);
     const themeToggle = useAtomValue(themeToggleAtom);
 
-    const toggleChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        toggleDarkTheme(e.target.checked);
-        await changeTheme(e.target.checked);
-    };
+    const { t, i18n } = useTranslation();
+
+    const lngs = ['en', 'fr'];
 
     useEffect(() => {
         if (!checkboxTheme.current)
             return;
         checkboxTheme.current.checked = themeToggle;
     }, [themeToggle]);
+
+    const toggleChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        toggleDarkTheme(e.target.checked);
+        await changeTheme(e.target.checked);
+    };
+
+    const onLanguageChange = async (e: CustomEvent) => {
+        i18n.changeLanguage(e.detail.value);
+        await changeLanguage(e.detail.value)
+    }
 
     return (
         <IonMenu contentId="main-content" side='end'>
@@ -28,10 +38,10 @@ export const Settings = () => {
                     <IonMenuToggle>
                         <IonIcon size='large' icon={arrowBack} />
                     </IonMenuToggle>
-                    <IonText className='align-self-center'><h1 className='m-0'>Settings</h1></IonText>
+                    <IonText className='align-self-center'><h1 className='m-0'>{t('settings.title')}</h1></IonText>
                     <div className='px-3 mt-3'>
                         <div className='flex flex-row justify-content-between align-items-center'>
-                            <span className='text-xl font-bold'>Theme</span>
+                            <span className='text-xl font-bold'>{t('settings.theme')}</span>
                             <input type="checkbox" id="switcher-input" className="switcher-input" onChange={toggleChange} ref={checkboxTheme}/>
                             <label className="switcher-label" htmlFor="switcher-input">
                                 <IonIcon icon={moon} size='large' />
@@ -39,6 +49,13 @@ export const Settings = () => {
                                 <IonIcon icon={sunny} size='large' />
                             </label>
                         </div>
+
+                        <IonSelect label={t('settings.language')} value={i18n.language} labelPlacement='fixed' onIonChange={onLanguageChange}>
+                            { lngs.map(l => (
+                                <IonSelectOption value={l}>{t(`settings.${l}`)}</IonSelectOption>
+                            )) }
+                        
+                        </IonSelect>
                     </div>
                 </div>
             </IonContent>

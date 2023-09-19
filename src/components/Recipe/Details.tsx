@@ -2,6 +2,7 @@ import React from 'react'
 import { Recipe } from '../../interfaces/repice';
 import { IonButton, IonContent, IonIcon, IonPage, IonText } from '@ionic/react';
 import { arrowBack, pencil } from 'ionicons/icons';
+import { useTranslation } from 'react-i18next';
 
 type DetailsProps = {
     recipe: Recipe | undefined
@@ -10,6 +11,7 @@ type DetailsProps = {
 }
 
 export const Details = ({recipe, dismiss, editRecipe}: DetailsProps) => {
+    const { t } = useTranslation();    
 
     if (!recipe)
         return;
@@ -30,8 +32,8 @@ export const Details = ({recipe, dismiss, editRecipe}: DetailsProps) => {
                 </div>
                 <IonText color="primary">{recipe.category}</IonText>
                 <h1 className='w-8 text-4xl mt-1'>{recipe.name}</h1>
-                <span>{recipe.quantity} {recipe.quantityType}</span>
-                <h3>Ingredients</h3>
+                <span>{recipe.quantity} { recipe.quantityType && t(`recipe.category.${recipe.quantityType}`)}</span>
+                <h3>{t('recipe.ingredients')}</h3>
             </IonContent>
         </IonPage>
     )

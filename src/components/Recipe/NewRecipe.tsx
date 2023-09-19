@@ -6,6 +6,7 @@ import { Formik, FormikHelpers, Form, Field, FastFieldProps } from 'formik';
 import { Recipe, RecipeForm } from '../../interfaces/repice';
 import { useAtom } from 'jotai'
 import { recipiesAtom, selectedRecipeAtom } from '../../atoms/recipe';
+import { useTranslation } from 'react-i18next';
 
 type NewRecipeProps = {
     recipe: Recipe | undefined,
@@ -15,6 +16,8 @@ type NewRecipeProps = {
 const NewRecipe = ({ recipe, dismiss }: NewRecipeProps) => {
     const [_, setSelectedRecipe] = useAtom(selectedRecipeAtom);
     const [recipies, setRecipies] = useAtom(recipiesAtom);
+
+    const { t } = useTranslation();
 
     const [presentToast] = useIonToast();
 
@@ -44,11 +47,11 @@ const NewRecipe = ({ recipe, dismiss }: NewRecipeProps) => {
             const index = _recipies.findIndex(r => r.id = recipe.id);
             _recipies[index] = {..._recipies[index], ...values};
             setSelectedRecipe(_recipies[index]);
-            showToast("Recipe has been updated.");
+            showToast(t('recipe.updated'));
         } else {
             await saveRecipe(values);
             _recipies = await getRecipies();
-            showToast("Recipe has been saved.");
+            showToast(t('recipe.saved'));
         }
         setRecipies(_recipies);
         dismiss();
@@ -57,12 +60,12 @@ const NewRecipe = ({ recipe, dismiss }: NewRecipeProps) => {
     const validate = async (values: RecipeForm) => {
         const errors: any = {};
         if (!!!values.name)
-            errors.name = 'Recipe name is required.';
+            errors.name = t('recipe.form.nameRequired');
         else if (await isExisting(values.name, recipe?.id))
-            errors.name = 'This recipe already exists.';
+            errors.name = t('recipe.form.exists');
         
         if (values.quantity && values.quantity < 0)
-            errors.quantity = 'Quantity must be empty or greater than 0';
+            errors.quantity = t('recipe.form.quantityPositive.');
                 
         return errors;
     }
@@ -74,20 +77,20 @@ const NewRecipe = ({ recipe, dismiss }: NewRecipeProps) => {
                     <IonButton fill='clear' onClick={dismiss}>
                         <IonIcon size='large' icon={arrowBack} />
                     </IonButton>
-                    <IonText color='primary'><h1 className='m-0'>New recipe</h1></IonText>
+                    <IonText color='primary'><h1 className='m-0'>{t('recipe.newRecipe')}</h1></IonText>
                 </div>
                 <Formik initialValues={initialValues} validate={validate} onSubmit={onSubmit} validateOnChange={false} validateOnBlur={false} validateOnMount={false}>
                         <Form className='flex flex-column gap-3 mt-3'>
                             <Field name="name" component>
                                 {({ field, form: {errors}}: FastFieldProps) => (
                                     <IonInput
-                                        label='Name'
+                                        label={t('recipe.form.name')}
                                         name={field.name}
                                         value={field.value}
                                         onIonChange={field.onChange}
                                         onIonBlur={field.onBlur}
                                         labelPlacement='floating'
-                                        placeholder='Recipe name'
+                                        placeholder={t('recipe.form.namePlaceholder')}
                                         fill='outline'
                                         className={errors.name ? 'ion-invalid ion-touched mb-2' : 'mb-2'}
                                         errorText={String(errors.name || '')}
@@ -95,9 +98,9 @@ const NewRecipe = ({ recipe, dismiss }: NewRecipeProps) => {
                                 )}
                             </Field>
                             <Field name="quantity" component>
-                                {({ field, form: {touched, errors}, meta}: FastFieldProps) => (
+                                {({ field, form: {errors}}: FastFieldProps) => (
                                     <IonInput
-                                        label='Quantity'
+                                        label={t('recipe.form.quantity')}
                                         type='number'
                                         min={0}
                                         name={field.name}
@@ -105,7 +108,7 @@ const NewRecipe = ({ recipe, dismiss }: NewRecipeProps) => {
                                         onIonChange={field.onChange}
                                         onIonBlur={field.onBlur}
                                         labelPlacement='floating'
-                                        placeholder='Quantity'
+                                        placeholder={t('recipe.form.quantity')}
                                         fill='outline'
                                         className={errors.quantity ? 'ion-invalid ion-touched mb-2' : 'mb-2'}
                                         errorText={String(errors.quantity || '')}
@@ -113,15 +116,15 @@ const NewRecipe = ({ recipe, dismiss }: NewRecipeProps) => {
                                 )}
                             </Field>
                             <Field name="quantityType" component>
-                                {({ field, form: {touched, errors}, meta}: FastFieldProps) => (
+                                {({ field, form: {errors}}: FastFieldProps) => (
                                     <IonInput
-                                        label='Quantity type'
+                                        label={t('recipe.form.quantityType')}
                                         name={field.name}
                                         value={field.value}
                                         onIonChange={field.onChange}
                                         onIonBlur={field.onBlur}
                                         labelPlacement='floating'
-                                        placeholder='Quantity type'
+                                        placeholder={t('recipe.form.quantityType')}
                                         fill='outline'
                                         className={errors.quantityType ? 'ion-invalid ion-touched mb-2' : 'mb-2'}
                                         errorText={String(errors.quantityType || '')}
@@ -130,28 +133,28 @@ const NewRecipe = ({ recipe, dismiss }: NewRecipeProps) => {
                             </Field>
 
                             <Field name="category" component>
-                                {({ field, form: {touched, errors}, meta}: FastFieldProps) => (
+                                {({ field }: FastFieldProps) => (
                                     <IonSelect
-                                        label='Category'
+                                        label={t('recipe.form.category')}
                                         name={field.name}
                                         value={field.value}
                                         onIonChange={field.onChange}
                                         onIonBlur={field.onBlur}
                                         labelPlacement='floating'
-                                        placeholder='Category'
+                                        placeholder={t('recipe.form.category')}
                                         fill='outline'
                                     >
-                                        <IonSelectOption value="Breakfast">Breakfast</IonSelectOption>
-                                        <IonSelectOption value="Light meal">Light meal</IonSelectOption>
-                                        <IonSelectOption value="Mains">Mains</IonSelectOption>
-                                        <IonSelectOption value="Desert">Desert</IonSelectOption>
+                                        <IonSelectOption value="breakfast">{t('recipe.category.breakfast')}</IonSelectOption>
+                                        <IonSelectOption value="lightMeal">{t('recipe.category.lightMeal')}</IonSelectOption>
+                                        <IonSelectOption value="mains">{t('recipe.category.mains')}</IonSelectOption>
+                                        <IonSelectOption value="desert">{t('recipe.category.desert')}</IonSelectOption>
                                     </IonSelect>
                                 )}
                             </Field>
                             
                         <div className='flex justify-content-end'>
-                            <IonButton fill='clear' color={'danger'} onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
-                            <IonButton fill='clear' color={'success'} type='submit'>Save</IonButton>
+                            <IonButton fill='clear' color={'danger'} onClick={dismiss}>{t('cancel')}</IonButton>
+                            <IonButton fill='clear' color={'success'} type='submit'>{t('save')}</IonButton>
                         </div>
                     </Form>
                 </Formik>
