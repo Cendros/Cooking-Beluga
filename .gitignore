@@ -27,6 +27,15 @@ yarn-error.log*
 
 # Optional eslint cache
 .eslintcache
+.eslintrc.js
+.browserslistrc
+.npmrc
+capacitor.config.ts
+cypress.config.ts
+tsconfig.json
+tsconfig.node.json
+ionic.config.json
+vite.config.ts
 
 /android/*
 /dist/
