@@ -1,29 +1,27 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Recipe } from '../../interfaces/repice';
-import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonPage, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonPage, IonText } from '@ionic/react';
 import { arrowBack, pencil } from 'ionicons/icons';
 
 type DetailsProps = {
-    recipe: Recipe | undefined,
-    onDismiss: (data?: string | null | undefined | number, role?: string) => void;
+    recipe: Recipe | undefined
+    dismiss: () => void
+    editRecipe: () => void
 }
 
-export const Details = ({recipe, onDismiss}: DetailsProps) => {
+export const Details = ({recipe, dismiss, editRecipe}: DetailsProps) => {
+
     if (!recipe)
         return;
-
-    const edit = () => {
-
-    }
 
     return (
         <IonPage>
             <IonContent className="ion-padding">
                 <div className='flex flex-row justify-content-between'>
-                    <IonButton fill='clear' onClick={() => onDismiss()}>
+                    <IonButton fill='clear' onClick={dismiss}>
                         <IonIcon size='large' icon={arrowBack} />
                     </IonButton>
-                    <IonButton fill='clear' onClick={() => edit}>
+                    <IonButton fill='clear' onClick={editRecipe}>
                         <IonIcon size='large' icon={pencil} />
                     </IonButton>
                 </div>

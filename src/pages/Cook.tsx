@@ -13,14 +13,24 @@ const Cook: React.FC = () => {
     const [recipies, setRecipies] = useAtom(recipiesAtom);
     const [selectedRecipe, setSelectedRecipe] = useAtom(selectedRecipeAtom);
 
-    const ModalDetails = ({onDismiss}: {onDismiss: () => void;}) => {
+    const ModalDetails = ({onDismiss}: {onDismiss: () => void}) => {
         return (
-            <Details recipe={selectedRecipe} onDismiss={onDismiss} />
+            <Details recipe={selectedRecipe} dismiss={onDismiss} editRecipe={newRecipePresent} />
+        )
+    }
+
+    const NewRecipeModal = ({onDismiss}: {onDismiss: () => void}) => {
+        return (
+            <NewRecipe recipe={selectedRecipe} dismiss={onDismiss} />
         )
     }
 
     const [present, dismiss] = useIonModal(ModalDetails, {
-        onDismiss: () => dismiss(),
+        onDismiss: () => dismiss()
+    });
+
+    const [newRecipePresent, newRecipeDismiss] = useIonModal(NewRecipeModal, {
+        onDismiss: () => newRecipeDismiss()
     });
 
     useEffect(() => {        
@@ -33,6 +43,10 @@ const Cook: React.FC = () => {
             return;
         present({ onDidDismiss: () => setSelectedRecipe(undefined) });
     }, [selectedRecipe]);
+
+    const openNewRecipe = () => {
+        newRecipePresent();
+    }
 
     const fetchRecipies = async () => {        
         const _recipies = await getRecipies();
@@ -56,7 +70,7 @@ const Cook: React.FC = () => {
                 </IonRefresherContent>
             </IonRefresher>
             
-            <IonButton expand='block' color='secondary' id='open-new-recipe' className='mb-3'>
+            <IonButton expand='block' color='secondary' className='mb-3' onClick={openNewRecipe}>
                 New Recipe
                 <IonIcon slot='start' icon={addOutline} />
             </IonButton>
@@ -73,7 +87,6 @@ const Cook: React.FC = () => {
                     </>
                 }
 
-            <NewRecipe />
         </IonContent>
     </>
 };
