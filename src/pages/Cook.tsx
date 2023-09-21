@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonIcon, IonMenuToggle, IonPage, IonRefresher, IonRefresherContent, IonTitle, IonToolbar, RefresherEventDetail, useIonModal } from '@ionic/react';
+import { IonButton, IonContent, IonHeader, IonIcon, IonMenuToggle, IonPage, IonTitle, IonToolbar, RefresherEventDetail, useIonModal } from '@ionic/react';
 import { addOutline, settings } from 'ionicons/icons';
 import React, { useEffect } from 'react';
 import { getRecipies } from '../services/recipe';
@@ -57,30 +57,20 @@ const Cook: React.FC = () => {
         setRecipies(_recipies);
     }
 
-    const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
-        await fetchRecipies();
-        event.detail.complete();
-    }
-
     return <>
         <Settings />
         <IonPage id='main-content'>
             <IonHeader>
                 <IonToolbar color='primary'>
                     <div className='flex flex-row justify-content-between align-items-center mx-4'>
-                        <IonTitle className='m-0 p-0'>Cooking Beluga</IonTitle>
-                        <IonMenuToggle>
+                        <IonTitle className='m-0 p-0 static'>Cooking Beluga</IonTitle>
+                        <IonMenuToggle className='align-self-end'>
                             <IonIcon icon={settings} className='text-3xl mt-1' />
                         </IonMenuToggle>
                     </div>
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-                <IonRefresher slot='fixed' onIonRefresh={handleRefresh}>
-                    <IonRefresherContent>
-                    </IonRefresherContent>
-                </IonRefresher>
-                
                 <IonButton expand='block' color='secondary' className='mb-3' onClick={openNewRecipe}>
                     {t('recipe.newRecipe')}
                     <IonIcon slot='start' icon={addOutline} />

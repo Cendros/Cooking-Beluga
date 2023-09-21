@@ -3,7 +3,7 @@ import { SQLiteConnection, CapacitorSQLite, SQLiteDBConnection } from '@capacito
 import { JeepSqlite } from 'jeep-sqlite/dist/components/jeep-sqlite';
 
 const createTables = `
-    PRAGMA user_version = 2;
+    PRAGMA user_version = 1;
 
     CREATE TABLE IF NOT EXISTS recipe (
         id INTEGER PRIMARY KEY NOT NULL,
@@ -43,6 +43,10 @@ const createTables = `
     END;
 `;
 
+const getVersion = 'PRAGMA user_version;';
+
+const migrations = [createTables];
+
 export const initDb = async () => {
     const platform = Capacitor.getPlatform();
     
@@ -66,7 +70,14 @@ export const initDb = async () => {
 
         await db.open();
 
-        await db.execute(createTables);
+        let version = 0;
+        const res = await db.query(getVersion);
+        if (res.values)
+            version = res.values[0].user_version;
+        
+        migrations.splice(0, version);
+        migrations.forEach(async m => await db.execute(m));
+        
         if (platform === 'web')
             await sqlite.saveToStore('cooking_beluga');
     } catch (err) {

@@ -14,7 +14,7 @@ export const Details = ({recipe, dismiss, editRecipe}: DetailsProps) => {
     const { t } = useTranslation();    
 
     if (!recipe)
-        return;
+        return <></>;
 
     return (
         <IonPage>

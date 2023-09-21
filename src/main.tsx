@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from 'react';
-import { createRoot } from 'react-dom/client';
+import { render } from 'react-dom';
 import App from './App';
 import { JSX as LocalJSX  } from "jeep-sqlite/loader";
 import { initDb } from './db/init';
@@ -25,10 +25,10 @@ window.addEventListener('DOMContentLoaded', async _ => {
     await initDb();
 
     const container = document.getElementById('root');
-    const root = createRoot(container!);
-    root.render(
+    render(
         <React.StrictMode>
             <App />
-        </React.StrictMode>
+        </React.StrictMode>,
+        container
     );
 })
